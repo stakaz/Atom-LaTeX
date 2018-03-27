@@ -54,11 +54,11 @@ class Command extends Disposable
 
   predefinedCommands: (prefix) ->
     cwlfile = "/home/gluon/github/Atom-LaTeX/cwl/test.cwl"
-    console.log cwlfile
+    # console.log cwlfile
     if !fs.existsSync(cwlfile)
       return {}
     content = fs.readFileSync cwlfile, 'utf-8'
-    console.log content
+    # console.log content
     texItems = @getCommandsFromCwl(content)
     for key of texItems
       @items[key] = texItems[key] if not (key of @items)
@@ -70,18 +70,18 @@ class Command extends Disposable
         item.type = 'function'
         item.latexType = 'command'
         suggestions.push item
-    for symbol in latexSymbols
-      if prefix.length is 0 or symbol.indexOf(prefix) > -1
-        if symbol[0] isnt '\\'
-          continue
-        suggestions.push
-          displayText: symbol.slice(1)
-          snippet: symbol.slice(1)
-          chainComplete: false
-          replacementPrefix: prefix
-          type: 'function'
-          latexType: 'command'
-          counts: 0
+    # for symbol in latexSymbols
+    #   if prefix.length is 0 or symbol.indexOf(prefix) > -1
+    #     if symbol[0] isnt '\\'
+    #       continue
+    #     suggestions.push
+    #       displayText: symbol.slice(1)
+    #       snippet: symbol.slice(1)
+    #       chainComplete: false
+    #       replacementPrefix: prefix
+    #       type: 'function'
+    #       latexType: 'command'
+    #       counts: 0
     return suggestions
 
   getCommands: (tex) ->
@@ -95,7 +95,7 @@ class Command extends Disposable
   getCommandsFromCwl: (content) ->
     items = {}
     # catches up to six arguments
-    itemReg = /(?:\\){1}((?!begin|end)([\w]+)(?:([{\[\<]{1})([^}\>\]]*)([}\]\>]{1}))?(?:([{\[\<]{1})([^}\>\]]*)([}\]\>]{1}))?(?:([{\[\<]{1})([^}\>\]]*)([}\]\>]{1}))?(?:([{\[\<]{1})([^}\>\]]*)([}\]\>]{1}))?(?:([{\[\<]{1})([^}\>\]]*)([}\]\>]{1}))?(?:([{\[\<]{1})([^}\>\]]*)([}\]\>]{1}))?)/g
+    itemReg = /(?:\\){1}((?!begin|end)([\w]+)(?:([{\[\<]{1,2})([\w\s-\+\*]*)([}\]\>]{1,2}))?(?:([{\[\<]{1,2})([\w\s-\+\*]*)([}\]\>]{1,2}))?(?:([{\[\<]{1,2})([\w\s-\+\*]*)([}\]\>]{1,2}))?(?:([{\[\<]{1,2})([\w\s-\+\*]*)([}\]\>]{1,2}))?(?:([{\[\<]{1,2})([\w\s-\+\*]*)([}\]\>]{1,2}))?(?:([{\[\<]{1,2})([\w\s-\+\*]*)([}\]\>]{1,2}))?)/g
     loop
       result = itemReg.exec content
       break if !result?
@@ -143,6 +143,58 @@ class Command extends Disposable
           counts: 1
       else
         items[result[1]].counts += 1
+          # catches up to six arguments
+    # itemReg = /\\(begin{([\w]+)}(?:([{\[\<]{1,2})([\w\s-\+\*]*)([}\]\>]{1,2}))?(?:([{\[\<]{1,2})([\w\s-\+\*]*)([}\]\>]{1,2}))?(?:([{\[\<]{1,2})([\w\s-\+\*]*)([}\]\>]{1,2}))?(?:([{\[\<]{1,2})([\w\s-\+\*]*)([}\]\>]{1,2}))?(?:([{\[\<]{1,2})([\w\s-\+\*]*)([}\]\>]{1,2}))?(?:([{\[\<]{1,2})([\w\s-\+\*]*)([}\]\>]{1,2}))?(\\item)?)/g
+    # loop
+    #   result = itemReg.exec content
+    #   break if !result?
+    #   if not (result[1] of items)
+    #     chainComplete = false
+    #     snippet = "begin{" + result[2] + "}"
+    #     display = "begin{" + result[2] + "}"
+    #     number_of_param = 0
+    #     item = ""
+    #     if result[3]
+    #       number_of_param += 1
+    #       chainComplete = true
+    #       display += "#{result[3]}#{result[4]}#{result[5]}"
+    #       snippet += "#{result[3]}${#{number_of_param}:#{result[4]}}#{result[5]}"
+    #       if result[7]
+    #         number_of_param += 1
+    #         chainComplete = true
+    #         display += "#{result[6]}#{result[7]}#{result[8]}"
+    #         snippet += "#{result[6]}${#{number_of_param}:#{result[7]}}#{result[8]}"
+    #         if result[10]
+    #           number_of_param += 1
+    #           chainComplete = true
+    #           display += "#{result[9]}#{result[10]}#{result[11]}"
+    #           snippet += "#{result[9]}${#{number_of_param}:#{result[10]}}#{result[11]}"
+    #           if result[13]
+    #             number_of_param += 1
+    #             chainComplete = true
+    #             display += "#{result[12]}#{result[13]}#{result[14]}"
+    #             snippet += "#{result[12]}${#{number_of_param}:#{result[13]}}#{result[14]}"
+    #             if result[16]
+    #               number_of_param += 1
+    #               chainComplete = true
+    #               display += "#{result[15]}#{result[16]}#{result[17]}"
+    #               snippet += "#{result[15]}${#{number_of_param}:#{result[16]}}#{result[17]}"
+    #               if result[19]
+    #                 number_of_param += 1
+    #                 chainComplete = true
+    #                 display += "#{result[18]}#{result[19]}#{result[20]}"
+    #                 snippet += "#{result[18]}${#{number_of_param}:#{result[19]}}#{result[20]}"
+    #     if result[21]
+    #       item = "\\\\item "
+    #     items[result[1]] =
+    #       displayText: display
+    #       snippet: snippet + "\n\t" + item + "$#{number_of_param + 1}\n\\\\end{#{result[2]}}\n$#{number_of_param + 2}"
+    #       type: 'function'
+    #       latexType: 'environment'
+    #       chainComplete: chainComplete
+    #       counts: 1
+    #   else
+    #     items[result[1]].counts += 1
     newCommandReg = /\\(?:re|provide)?(?:new)?command(?:{)?\\(\w+)(?:})?(?:\[([0-9]+)\]{)?/g
     loop
       result = newCommandReg.exec content
@@ -170,31 +222,31 @@ class Command extends Disposable
 
   getCommandsFromContent: (content) ->
     items = {}
-    itemReg = /\\([a-zA-Z]+)({[^{}]*})?({[^{}]*})?({[^{}]*})?/g
-    loop
-      result = itemReg.exec content
-      break if !result?
-      if not (result[1] of items)
-        if result[2]
-          chainComplete = true
-          snippet = result[1] + '{$1}'
-          if result[3]
-            snippet += '{$2}'
-            if result[4]
-              snippet += '{$3}'
-        else
-          chainComplete = false
-          snippet = result[1]
-        items[result[1]] =
-          displayText: result[1]
-          snippet: snippet
-          type: 'function'
-          latexType: 'command'
-          chainComplete: chainComplete
-          counts: 1
-      else
-        items[result[1]].counts += 1
-      # Parse custom user-defined commands with fixed number of parameters TODO: optional parameters
+    # itemReg = /\\([a-zA-Z]+)({[^{}]*})?({[^{}]*})?({[^{}]*})?/g
+    # loop
+    #   result = itemReg.exec content
+    #   break if !result?
+    #   if not (result[1] of items)
+    #     if result[2]
+    #       chainComplete = true
+    #       snippet = result[1] + '{$1}'
+    #       if result[3]
+    #         snippet += '{$2}'
+    #         if result[4]
+    #           snippet += '{$3}'
+    #     else
+    #       chainComplete = false
+    #       snippet = result[1]
+    #     items[result[1]] =
+    #       displayText: result[1]
+    #       snippet: snippet
+    #       type: 'function'
+    #       latexType: 'command'
+    #       chainComplete: chainComplete
+    #       counts: 1
+    #   else
+    #     items[result[1]].counts += 1
+    #   # Parse custom user-defined commands with fixed number of parameters TODO: optional parameters
     newCommandReg = /\\(?:re|provide)?(?:new)?command(?:{)?\\(\w+)(?:})?(?:\[([0-9]+)\]{)?/g
     loop
       result = newCommandReg.exec content
@@ -227,7 +279,7 @@ class Command extends Disposable
     latex:
       begin:
         displayText: 'begin'
-        snippet: 'begin{$1}\n\t$2\n\\\\end{$1}'
+        snippet: 'begin{$1'
         chainComplete: true
       cite:
         displayText: 'cite'
