@@ -11,7 +11,7 @@ patterns: [
     name: "meta.space-after-command.latex"
   }
   {
-    match: "((\\\\)(begin)({)(figure|table)(}))(?:(\\[)([^\\]]*)(\\]))?"
+    match: "((\\\\)(begin)({)(figure|table|tabular|tabularx)(}))(?:([\\[{])([^\\]]*)([\\]}]))?"
     captures:
       "2":
         name: "support.function.be.latex"
@@ -170,7 +170,7 @@ patterns: [
         begin: "(((\\\\)begin)(\\{)(lstlisting)(\\})(?:(\\[).*(\\]))?(\\s*%\\s*(?i:Java)\\n?))"
         captures:
           "1":
-            name: "meta.function.embedded.latex"
+            name: "support.function.be.latex"
           "2":
             name: "support.function.be.latex"
           "3":
@@ -207,7 +207,7 @@ patterns: [
         begin: "(((\\\\)begin)(\\{)(lstlisting)(\\})(?:(\\[).*(\\]))?(\\s*%\\s*(?i:Python)\\n?))"
         captures:
           "1":
-            name: "meta.function.embedded.latex"
+            name: "support.function.be.latex"
           "2":
             name: "support.function.be.latex"
           "3":
@@ -244,7 +244,7 @@ patterns: [
         begin: "((\\\\)begin)(\\{)(lstlisting)(\\})(?:(\\[).*(\\]))?(\\s*%.*\\n?)?"
         captures:
           "1":
-            name: "meta.function.embedded.latex"
+            name: "support.function.be.latex"
           "2":
             name: "support.function.be.latex"
           "3":
@@ -264,6 +264,18 @@ patterns: [
         contentName: "meta.function.embedded.latex"
         end: "(((\\\\)end)(\\{)(lstlisting)(\\}))"
         name: "meta.embedded.block.generic"
+        patterns: [
+          {
+            begin: "^(?!\\\\end\\{lstlisting\\})"
+            end: "(?=\\\\end\\{lstlisting\\})"
+            name: "source.julia"
+            patterns: [
+              {
+                include: "source.julia"
+              }
+            ]
+          }
+        ]
       }
     ]
   }
@@ -377,74 +389,74 @@ patterns: [
       }
     ]
   }
-  {
-    begin: '''
-      (?x)
-      					(?:\\s*)										# Optional whitespace
-      					((\\\\)begin)									# Marker - Function
-      					(\\{)										# Open Bracket
-      						(array|tabular[xy*]?)
-      					(\\})										# Close Bracket
-      					(\\s*\\n)?				# Match to end of line absent of content
-
-    '''
-    captures:
-      "1":
-        name: "support.function.be.latex"
-      "2":
-        name: "punctuation.definition.function.latex"
-      "3":
-        name: "punctuation.definition.arguments.begin.latex"
-      "4":
-        name: "variable.parameter.function.latex"
-      "5":
-        name: "punctuation.definition.arguments.end.latex"
-    contentName: "meta.data.environment.tabular.latex"
-    end: '''
-      (?x)
-      					(?:\\s*)										# Optional whitespace
-      					((\\\\)end)									# Marker - Function
-      					(\\{)										# Open Bracket
-      						(\\4)				# Previous capture from begin
-      					(\\})										# Close Bracket
-      					(?:\\s*\\n)?				# Match to end of line absent of content
-
-    '''
-    name: "meta.function.environment.tabular.latex"
-    patterns: [
-      {
-        match: "\\\\\\\\"
-        name: "punctuation.definition.table.row.latex"
-      }
-      {
-        begin: "(?:^|(?<=\\\\\\\\))(?!\\\\\\\\|\\s*\\\\end\\{(?:tabular|array))"
-        end: "(?=\\\\\\\\|\\s*\\\\end\\{(?:tabular|array))"
-        name: "meta.row.environment.tabular.latex"
-        patterns: [
-          {
-            match: "&"
-            name: "punctuation.definition.table.cell.latex"
-          }
-          {
-            begin: "(?:^|(?<=&))((?!&|\\\\\\\\|$))"
-            end: "(?=&|\\\\\\\\|\\s*\\\\end\\{(?:tabular|array))"
-            name: "meta.cell.environment.tabular.latex"
-            patterns: [
-              {
-                include: "$base"
-              }
-            ]
-          }
-          {
-            include: "$base"
-          }
-        ]
-      }
-      {
-        include: "$base"
-      }
-    ]
-  }
+  # {
+  #   begin: '''
+  #     (?x)
+  #     					(?:\\s*)										# Optional whitespace
+  #     					((\\\\)begin)									# Marker - Function
+  #     					(\\{)										# Open Bracket
+  #     						(array|tabular[xy*]?)
+  #     					(\\})										# Close Bracket
+  #     					(\\s*\\n)?				# Match to end of line absent of content
+  #
+  #   '''
+  #   captures:
+  #     "1":
+  #       name: "support.function.be.latex"
+  #     "2":
+  #       name: "punctuation.definition.function.latex"
+  #     "3":
+  #       name: "punctuation.definition.arguments.begin.latex"
+  #     "4":
+  #       name: "variable.parameter.function.latex"
+  #     "5":
+  #       name: "punctuation.definition.arguments.end.latex"
+  #   contentName: "meta.data.environment.tabular.latex"
+  #   end: '''
+  #     (?x)
+  #     					(?:\\s*)										# Optional whitespace
+  #     					((\\\\)end)									# Marker - Function
+  #     					(\\{)										# Open Bracket
+  #     						(\\4)				# Previous capture from begin
+  #     					(\\})										# Close Bracket
+  #     					(?:\\s*\\n)?				# Match to end of line absent of content
+  #
+  #   '''
+  #   name: "meta.function.environment.tabular.latex"
+  #   patterns: [
+  #     {
+  #       match: "\\\\\\\\"
+  #       name: "punctuation.definition.table.row.latex"
+  #     }
+  #     {
+  #       begin: "(?:^|(?<=\\\\\\\\))(?!\\\\\\\\|\\s*\\\\end\\{(?:tabular|array))"
+  #       end: "(?=\\\\\\\\|\\s*\\\\end\\{(?:tabular|array))"
+  #       name: "meta.row.environment.tabular.latex"
+  #       patterns: [
+  #         {
+  #           match: "&"
+  #           name: "punctuation.definition.table.cell.latex"
+  #         }
+  #         {
+  #           begin: "(?:^|(?<=&))((?!&|\\\\\\\\|$))"
+  #           end: "(?=&|\\\\\\\\|\\s*\\\\end\\{(?:tabular|array))"
+  #           name: "meta.cell.environment.tabular.latex"
+  #           patterns: [
+  #             {
+  #               include: "$base"
+  #             }
+  #           ]
+  #         }
+  #         {
+  #           include: "$base"
+  #         }
+  #       ]
+  #     }
+  #     {
+  #       include: "$base"
+  #     }
+  #   ]
+  # }
   {
     begin: "(?:\\s*)((\\\\)begin)(\\{)(itemize|enumerate|description|list)(\\})"
     captures:
