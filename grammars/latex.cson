@@ -1,7 +1,6 @@
 fileTypes: [
   "tex"
 ]
-firstLineMatch: "^\\\\documentclass(?!.*\\{beamer\\})"
 name: "LaTeX"
 limitLineLength: false
 patterns: [
@@ -35,6 +34,39 @@ patterns: [
         include: "$self"
       }
     ]
+  }
+  { # here come all functions where the arguments does not need a spellcheck
+    match: "((\\\\)(addtocounter)(?:([{\\[])([^}\\]]*)([}\\]]))?(?:([{\\[])([^}\\]]*)([}\\]]))?(?:([{\\[])([^}\\]]*)([}\\]]))?(?:([{\\[])([^}\\]]*)([}\\]]))?)"
+    captures:
+      "2":
+        name: "support.function.be.latex"
+      "3":
+        name: "support.function.be.latex"
+      "4":
+        name: "punctuation.section.group.begin.tex"
+      "5":
+        name: "variable.parameter.latex"
+      "6":
+        name: "punctuation.section.group.end.tex"
+      "7":
+        name: "punctuation.section.group.begin.tex"
+      "8":
+        name: "variable.parameter.latex"
+      "9":
+        name: "punctuation.section.group.end.tex"
+      "10":
+        name: "punctuation.section.group.begin.tex"
+      "11":
+        name: "variable.parameter.latex"
+      "12":
+        name: "punctuation.section.group.end.tex"
+      "13":
+        name: "punctuation.section.group.begin.tex"
+      "14":
+        name: "variable.parameter.latex"
+      "15":
+        name: "punctuation.section.group.end.tex"
+    name: "meta.function.nospell.latex"
   }
   {
     begin: "((\\\\)(includegraphics))(?:(\\[)([^\\]]*)(\\]))?(\\{)"

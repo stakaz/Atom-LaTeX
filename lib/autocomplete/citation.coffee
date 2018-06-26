@@ -109,4 +109,4 @@ bibEntries = ['article', 'book', 'bookinbook', 'booklet', 'collection', 'confere
               'incollection', 'inproceedings', 'inreference', 'manual', 'mastersthesis', 'misc',
               'mvbook', 'mvcollection', 'mvproceedings', 'mvreference', 'online', 'patent', 'periodical',
               'phdthesis', 'proceedings', 'reference', 'report', 'set', 'suppbook', 'suppcollection',
-              'suppperiodical', 'techreport', 'thesis', 'unpublished']
+              'suppperiodical', 'techreport', 'thesis', 'unpublished', 'video']
